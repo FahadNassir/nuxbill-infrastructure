@@ -1,0 +1,31 @@
+services:
+  nuxbill:
+    container_name: nuxbill
+    pull_policy: always
+    build: ./
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8080:80"
+    environment:
+     TZ: Africa/Nairobi
+     DB_USER: "nuxbill"
+     DB_PASSWORD: "${MYSQL_PASSWORD}"
+     DB_NAME: "nuxbill"
+     DB_HOST: "mysql"
+    depends_on:
+      - mysql
+
+  mysql:
+    container_name: mysql
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+      MYSQL_DATABASE: "nuxbill"
+      MYSQL_USER: "nuxbill"
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+    volumes:
+        - mysql_data:/var/lib/mysql
+
+volumes:
+    mysql_data:
